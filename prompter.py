@@ -48,5 +48,6 @@ def prompter(books, users, **kwargs):
 
     except KeyboardInterrupt:
         print("\nExiting...")
+        on_exit(books, users, kwargs["b"], kwargs["u"])
         
         

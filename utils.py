@@ -11,6 +11,9 @@ def load_data(args):
             _dict[keys[index]] = field
         return _dict
 
+    if (args.b.isdigit() or args.u.isdigit()):
+        print("Please enter valid filenames for the books and users databases")
+        exit(1)
 
     with open(f'{args.b}') as library:
         books = library.readlines()
