@@ -14,7 +14,7 @@ def prompter(books, users, **kwargs):
 
         while True:
             print('')
-            print("Enter Ctrl+C to exit")
+            print("Press Ctrl+C to exit the system without saving")
             prompt = '> '
             print("".rjust(length + 10, '-'))
             for index, option in enumerate(options):
@@ -48,6 +48,6 @@ def prompter(books, users, **kwargs):
 
     except KeyboardInterrupt:
         print("\nExiting...")
-        on_exit(books, users, kwargs["b"], kwargs["u"])
+        
         
         
