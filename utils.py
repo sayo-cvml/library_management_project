@@ -148,6 +148,7 @@ def display_result(results):
                     "Yes" if result["on_loan_to"] else "No"
                     )
                 )
+            print('\n')
             return
 
         if "user_library_number" in results[0].keys():
@@ -164,9 +165,86 @@ def display_result(results):
                     result["books_on_loan4"],
                     )
                 )
+            print('\n')
             return
 
     else:
-        print("No results")
+        print("No results\n")
+
+
+def return_book(books, users):
+    loan_limit = 4
+    loaned_to_user = False
+    while True:
+        user_id = input(f"$$$ Enter the User ID: ")
+
+        if user_id.isdigit(): 
+            user = search(user_id, users)
+            if len(user) > 0:
+                user_exists = True
+                print("Accepted: User exists.")
+                display_result(user)
+                break
+            else:
+                print("Rejected: User does not exist.")
+
+        else:
+            print("Enter a valid ID")
+
+    while True:
+        book_id = input(f"$$$ Enter the Book ID: ")
+        if book_id.isdigit(): 
+            book = search(book_id, books)
+            if len(book) > 0:
+                book_exists = True
+                print("Accepted: Book exists")
+                if book[0]['on_loan_to'].isdigit():
+                    if int(book[0]['on_loan_to']) == int(user_id):
+                        loaned_to_user = True
+                    else:
+                        print("Book loaned to a different user.")
+
+                else:
+                    print("Book is not on loan")
+                display_result(book)
+                break
+            else:
+                print("Rejected: Book does not exist")
+
     
+    if loaned_to_user:
+
+        books_on_loan = []
+        for key, value in user[0].items():
+            if "books_on_loan" in key and value.isdigit():
+                books_on_loan.append(value)
+
+        if books_on_loan:
+            books_on_loan = list(filter(lambda book: int(book) != int(book_id), books_on_loan))
+        
+            update_user = user[0]
+            update_book = book[0]
+            for index in range(loan_limit):
+                update_user[f"books_on_loan{index+1}"] = ""
+
+            for index, bk in enumerate(books_on_loan):
+                update_user[f"books_on_loan{index+1}"] = bk
+
+            update_book["on_loan_to"] = ""
+            books = list(filter(lambda book: book["book_id"] != update_book["book_id"], books))
+            users = list(filter(lambda user: user["user_library_number"] != update_user["user_library_number"], users))
+            books.append(update_book)
+            users.append(update_user)
+            books.sort(key=lambda book: int(book["book_id"]))
+            users.sort(key=lambda user: int(user["user_library_number"]))
+            display_result(search(user_id, users))
+            display_result(search(book_id, books))
+
+    else:
+        print("Book loaned to a different user")
+
+        
+    
+    return books, users
+
     

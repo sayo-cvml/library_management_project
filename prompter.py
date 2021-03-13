@@ -1,13 +1,15 @@
-from utils import search, lend_book, on_exit, display_result
-from time import time
+from utils import search, lend_book, on_exit, \
+                display_result, return_book
+
 def prompter(books, users, **kwargs):
     
     try:
         options = [
             "Search the book database for a book by Author surname",
-            "Search the user database for a user by surname",
+            "Search the user database for a user by User surname",
             "Lend a book to a user",
-            "Exit from the system"
+            "Receive book borrowed from a user",
+            "Exit from the system(creates new users and books database csv files)"
         ]
 
         length = max(list(map(lambda option: len(option), options)))
@@ -23,7 +25,7 @@ def prompter(books, users, **kwargs):
             print("".rjust(64, '-'))
             print(prompt, end='')
             selected = input("Select an option from the list above using the number: ")
-            if(selected.isdigit() and int(selected) > 0 and int(selected) < 5):
+            if(selected.isdigit() and int(selected) > 0 and int(selected) < 6):
                 if(selected == "1"):
                     while True:
                         author_name = input("$ Enter the Author's surname: ")
@@ -44,10 +46,14 @@ def prompter(books, users, **kwargs):
                     books, users = lend_book(books, users)
                     
                 if(selected == "4"):
+                    books, users = return_book(books, users)
+
+                if(selected == "5"):
                     on_exit(books, users, kwargs["b"], kwargs["u"])
 
     except KeyboardInterrupt:
         print("\nExiting...")
-        
+        exit(0)
+       
         
         
